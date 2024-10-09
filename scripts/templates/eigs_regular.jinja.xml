@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<chroma>
+  <Param>
+    <InlineMeasurements>
+      <elem>
+        <Name>CREATE_COLORVECS</Name>
+        <Frequency>1</Frequency>
+        <Param>
+          <num_vecs>{{ num_vecs }}</num_vecs>
+          <decay_dir>{{ decay_dir  }}</decay_dir>
+          <num_iter>{{ num_iter }}</num_iter>
+          <width>3.0</width>
+          <num_orthog> {{num_orthog }}</num_orthog>
+          <LinkSmearing>
+            <LinkSmearingType>{{ LinkSmearingType }}</LinkSmearingType>
+            <link_smear_fact>{{ link_smear_fact }}</link_smear_fact>
+            <link_smear_num>{{ link_smear_num }}</link_smear_num>
+            <no_smear_dir>{{ no_smear_dir }}</no_smear_dir>
+          </LinkSmearing>
+        </Param>
+        <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_{{ cfg_id }}</colorvec_id>
+          <ColorVecMapObject>
+            <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+            <FileName>colorvecs_{{ num_vecs}}_cfg{{ cfg_id }}.mod</FileName>
+          </ColorVecMapObject>
+        </NamedObject>
+      </elem>
+      <elem>
+      <annotation>
+        Save this copy in LIME format.
+      </annotation>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_{{ cfg_id }}</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec_{{ num_vecs }}_cfg{{ cfg_id }}.lime</file_name>
+        <file_volfmt>SINGLEFILE</file_volfmt>
+      </File>
+    </elem>
+    <elem>
+      <annotation>
+        Copy this map object.
+        In this case, it will be saved as a disk map object.
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTintValTEVPairLatticeColorVector</object_type>
+        <input_id>eigeninfo_{{ cfg_id }}</input_id>
+        <output_id>eigeninfo_{{ cfg_id }}_copy</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./colorvec_{{ num_vecs }}_cfg{{ cfg_id }}.mod</FileName>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    </InlineMeasurements>
+    <nrow>{{ NL }} {{ NL }} {{ NL }} {{ NT }}</nrow>
+    </Param>
+    <RNG>
+      <Seed>
+        <elem>11</elem>
+        <elem>11</elem>
+        <elem>11</elem>
+        <elem>0</elem>
+      </Seed>
+    </RNG>
+    <Cfg>
+      <cfg_type>SZINQIO</cfg_type>
+      <cfg_file> 
+      {{ cfg_path }}b{{ beta }}_ms{{ ms }}_mud-{{ mud }}_s{{ NL }}t{{ NT }}-{{ P }}-n_cfg_{{ cfg_id }}.lime
+      </cfg_file>
+      <parallel_io>false</parallel_io>
+  </Cfg>
+</chroma>

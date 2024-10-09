@@ -1,0 +1,1 @@
+python3 create_binned_tasks.py --in_file 'ens_files/b3.70_ms0.000_mud-0.022_s32t96.yml' --cfg_i 11 --cfg_f 1991 --cfg_step 10 --run_dir '../ini-binned-24-strange' --overwrite --list_tasks chroma_peram_strange --num_vecs 96

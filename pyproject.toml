@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "exosuite"
+version = "0.1.0"
+description = "Suite containing scripts for chroma measurements for exotic hadrons project at JSC"
+authors = ["Grant Bradley <g.bradley@fz-juelich.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.6.4"
+numpy = "^1.26.4"
+h5py = "^3.10.0"
+yaml2 = "^0.0.1"
+lsqfit = "^13.2"
+gvar = "^13.0.2"
+Jinja2 = "^3.1.3"
+pyyaml = "^6.0.1"
+ipykernel = "^6.29.4"
+pydantic-xmlmodel = "^0.4"
+yaml2pyclass = "^0.1.1"
+yamldataclassconfig = "^1.5.0"
+dataclass-wizard = {extras = ["yaml"], version = "^0.22.3"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

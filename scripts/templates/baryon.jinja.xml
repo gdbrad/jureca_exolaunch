@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<chroma>
+  <Param>
+    <InlineMeasurements>
+    {% include 'baryon/baryonbase.jinja.xml' %}
+    </InlineMeasurements>
+    <nrow>{{NL}} {{NL}} {{NL}} {{NT}}</nrow>
+  </Param>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Cfg>
+    <cfg_type>SZINQIO</cfg_type>
+    <cfg_file>{{ cfg_path }}</cfg_file>
+    <parallel_io>false</parallel_io>
+  </Cfg>
+</chroma>
