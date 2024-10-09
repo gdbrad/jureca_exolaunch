@@ -1,1 +1,1 @@
-./launch-binned.sh -n 64 -t peram -r 24
+./launch-binned.sh -n 96 -t peram_strange -r 24

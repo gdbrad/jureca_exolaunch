@@ -70,8 +70,8 @@ def main(options):
             os.makedirs(nvec_dir, exist_ok=True)
 
             for obj in run_objects:
-                if obj.startswith('chroma'):
-                    _obj = obj.split('_')[1]
+                if obj.startswith('chroma_'):
+                    _obj = obj[len('chroma_'):]
                     ini_out = f'{_obj}_{nvec}_cfgs_{cfg_group_start}-{cfg_group_end}.sh'
                     ini_path = os.path.join(nvec_dir,ini_out)
                     cfg_ids_and_devices = list(zip(cfg_ids, devices))

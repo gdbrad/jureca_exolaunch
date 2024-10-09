@@ -56,7 +56,7 @@ if [ "$type" = "peram_strange" ]; then
     BASE_DIR="/p/scratch/exotichadrons/exolaunch/ini-binned-24-strange"
 else 
     BASE_DIR="/p/scratch/exotichadrons/exolaunch/ini-binned-24"
-
+fi 
 
 CODE_DIR="/p/scratch/exotichadrons/chroma-distillation"
 source $CODE_DIR/install-scripts/machines/env-new-jureca-gpu.sh
@@ -80,13 +80,15 @@ check_file_size() {
 
 if [ "$convert" = true ]; then
     echo "Running HDF5 conversion for $type..."
+    
     if [ "$type" = "peram" ]; then
         SDB_DIR="/p/scratch/exotichadrons/exolaunch/perams_sdb/numvec$numvec/tsrc-${tsrc}"
-    if [ "$type" = "peram_strange" ]; then
+    elif [ "$type" = "peram_strange" ]; then
         SDB_DIR="/p/scratch/exotichadrons/exolaunch/perams_strange_sdb"
     else
         SDB_DIR="/p/scratch/exotichadrons/exolaunch/${type}_sdb/numvec$numvec"
     fi
+
     BASE_DIR="/p/scratch/exotichadrons/exolaunch/h5-out"
     in="$BASE_DIR/simple.ini.xml"
 
@@ -160,11 +162,11 @@ for cfg_dir in "$BASE_DIR"/cfgs_*; do
 
         echo "Processing directory: $cfg_dir"
 
-        if [ "$type" = "peram_strange" ]; then
-            numvec_dir="$cfg_dir"
-        else 
-            numvec_dir="$cfg_dir/numvec$numvec"
-            
+        # if [ "$type" = "peram_strange" ]; then
+        #     numvec_dir="$cfg_dir"
+        # else 
+        numvec_dir="$cfg_dir/numvec$numvec"
+
         if [ -d "$numvec_dir" ]; then
             echo "  Processing subdirectory: $numvec_dir"
 

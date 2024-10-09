@@ -6,7 +6,7 @@
 #SBATCH --partition=dc-gpu
 #SBATCH --gpu-bind=none
 #SBATCH --account=exotichadrons
-#SBATCH -t 12:00:00
+#SBATCH -t 24:00:00
 #SBATCH --gres=gpu:4
 range 
 export OPENBLAS_NUM_THREADS={{ superbblas_threads }}
