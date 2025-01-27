@@ -29,7 +29,7 @@ export OPTS=" -geom 1 1 1 1"
 
 {% for cfg_id, device_id in cfg_ids_and_devices %}
 log_{{ cfg_id }}=$BASE_DIR/res/log/perams_strange/perams_{{ cfg_id }}_numvecs-{{ num_vecs_perams }}.log
-in_{{ cfg_id }}=$BASE_DIR/ini-24/cnfg{{ cfg_id }}/numvec{{ num_vecs_perams }}/peram_strange_mg_{{ num_vecs_perams }}_cfg{{ cfg_id }}.ini.xml
+in_{{ cfg_id }}=$BASE_DIR/ini-24/cnfg{{ cfg_id }}/numvec{{ num_vecs_perams }}/peram_strange_mg_96_cfg{{ cfg_id }}.ini.xml
 out_{{ cfg_id }}=$BASE_DIR/res/out/perams_strange/perams_{{ cfg_id }}_numvecs-{{ num_vecs_perams }}.out.xml
 output_{{ cfg_id }}="$BASE_DIR/chroma_out/binned/perams_strange_{{ cfg_id }}_numvecs-{{ num_vecs_perams }}.out"
 

@@ -8,11 +8,7 @@
 #SBATCH --account=exotichadrons
 #SBATCH -t {{ eigs_chroma_minutes }}
 #SBATCH --gres=gpu:{{ num_gpu }}
-#SBATCH -o {{ run_path }}/slurm_out/eigs{{ cfg_id }}.out
-
-#METAQ NODES {{ eigs_slurm_nodes }}
-#METAQ MIN_WC_TIME {{ eigs_chroma_minutes }}
-#METAQ PROJECT exotichadrons.eigs
+#SBATCH -o {{ run_path }}/chroma_out/eigs{{ cfg_id }}.out
 
 CODE_DIR={{ code_dir }}
 METAQ_DIR={{ metaq_dir }}
@@ -25,7 +21,7 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3
 
 BASE_DIR={{ run_path }}
 log=$BASE_DIR/res/log/eigs/eigs_{{ cfg_id }}.log
-in=$BASE_DIR/ini-eigs/cnfg{{ cfg_id }}/eigs_cfg{{ cfg_id }}.ini.xml
+in=$BASE_DIR/ini/cnfg{{ cfg_id }}/eigs_{{ cfg_id }}.ini.xml
 out=$BASE_DIR/res/out/eigs/eigs_{{ cfg_id }}.out.xml
 
 output="$BASE_DIR/chroma_out/eigs{{ cfg_id }}.out"

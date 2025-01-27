@@ -56,12 +56,15 @@ if [ "$type" = "peram_strange" ]; then
     BASE_DIR="/p/scratch/exotichadrons/exolaunch/ini-binned-24-strange"
 else 
     BASE_DIR="/p/scratch/exotichadrons/exolaunch/ini-binned-24"
+    # BASE_DIR="/p/scratch/exotichadrons/exolaunch/ini-24"
+
 fi 
 
 CODE_DIR="/p/scratch/exotichadrons/chroma-distillation"
 source $CODE_DIR/install-scripts/machines/env-new-jureca-gpu.sh
-CHROMA_BIN=$CODE_DIR/build/chroma/mainprogs/main
+CHROMA_BIN=$CODE_DIR/install/chroma/bin
 
+# export QUDA_RESOURCES=$BASE_DIR/quda_resources
 export OPENBLAS_NUM_THREADS=16
 export OMP_NUM_THREADS=16
 export CUDA_VISIBLE_DEVICES=0,1,2,3
@@ -92,18 +95,23 @@ if [ "$convert" = true ]; then
     BASE_DIR="/p/scratch/exotichadrons/exolaunch/h5-out"
     in="$BASE_DIR/simple.ini.xml"
 
-    # Define minimum file size for meson with numvec 32
     min_size=$((400 * 1024 * 1024))
 
     for sdb_file in "$SDB_DIR"/*.sdb; do
         if [ -f "$sdb_file" ]; then
             base_name=$(basename "$sdb_file" .sdb)
+            if [ "$type" = "peram_strange" ]; then
+                cfg_num=$(echo "$base_name" | awk -F'_' '{print $NF}')
+            else
+                cfg_num=$(echo "$base_name" | grep -oP '\d+$')
+            fi
+
             cfg_num=$(echo $base_name | grep -oP '\d+$')
 
             if [[ "${cfg_numbers[*]}" =~ (^|[[:space:]])$cfg_num($|[[:space:]]) ]] || [ ${#cfg_numbers[@]} -eq 0 ]; then
-                log="$SDB_DIR/${base_name}_log.xml"
-                out="$SDB_DIR/${base_name}_out.xml"
-                stdout="$SDB_DIR/${base_name}_convert.stdout"
+                log="$SDB_DIR/log-trash/${base_name}_log.xml"
+                out="$SDB_DIR/xml-trash/${base_name}_out.xml"
+                stdout="$SDB_DIR/stdout/${base_name}_convert.stdout"
                 h5_file="$SDB_DIR/${base_name}.h5"
 
                 # Check if file exists or size is below the expected size
@@ -117,15 +125,21 @@ if [ "$convert" = true ]; then
                             continue
                         fi
                     fi
+                    # type for peram_strange is same 
+                    normalized_type="$type"
+                    if [ "$type" = "peram_strange" ]; then
+                        normalized_type="peram"
+                    fi
 
-                    object="$CHROMA_BIN/convert_${type}${numvec} $sdb_file"
+                    object="$CHROMA_BIN/convert_${normalized_type}${numvec} $sdb_file"
                     export OPTS="-geom 1 1 1 1" # QIO does not support multi-node jobs
                     echo "Re-running conversion for $sdb_file..."
 
                     if [ "$test" = true ]; then
-                        echo "srun --account=exotichadrons --partition=dc-gpu -t 00:45:00 --nodes=1 --ntasks-per-node=1 --gres=gpu:1 --threads-per-core=1 -n 1 -c 1 $object $OPTS -i $in -o $out -l $log > $stdout 2>&1"
+                        echo "$cfg_number" 
+                        # "srun --account=exotichadrons --partition=dc-gpu-devel -t 00:10:00 --nodes=1 --exclusive --ntasks-per-node=1 --gres=gpu:1 --threads-per-core=1 -n 1 -c 1 $object $OPTS -i $in -o $out -l $log > $stdout 2>&1"
                     else
-                        srun --account=exotichadrons --partition=dc-gpu -t 00:45:00 --nodes=1 --ntasks-per-node=1 --gres=gpu:1 --threads-per-core=1 -n 1 -c 1 $object $OPTS -i $in -o $out -l $log > $stdout 2>&1
+                        srun --account=exotichadrons --partition=dc-gpu-devel -t 00:15:00 --nodes=1 --ntasks-per-node=1 --gres=gpu:1 --threads-per-core=1 -n 1 -c 1 $object $OPTS -i $in -o $out -l $log > $stdout 2>&1
                     fi
                 fi
             fi
@@ -138,7 +152,7 @@ if [ "$convert" = true ]; then
     exit 0
 fi
 
-# Normal operation: Submitting sdb generation jobs concurrently in batches of 4 cfgs
+# Normal operation: Submit sdb generation jobs concurrently in batches of defined # of cfgs
 echo "Submitting jobs..."
 
 if [ ! -z "$skip_range" ]; then

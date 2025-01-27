@@ -58,7 +58,6 @@ def main(options):
         with open(options.in_file, 'w') as f:
             yaml.safe_dump(dataMap, f)
 
-    # Set up Jinja.
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE), undefined=jinja2.StrictUndefined)
     handler = TaskHandler(env)
     run_objects = []
@@ -101,8 +100,12 @@ def main(options):
                     nvec_dir = os.path.join(obj_dir, f'numvec{nvec}')
                     os.makedirs(nvec_dir, exist_ok=True)
 
-                    if obj.startswith('chroma'):
+                    if obj == 'chroma_eigs':
+                        ini_out = f'{obj.split("_")[1]}_cfg{cfg_id:02d}.sh'
+                    elif obj!= 'chroma_eigs' and obj.startswith('chroma'):
                         ini_out = f'{obj.split("_")[1]}_{nvec}_cfg{cfg_id:02d}.sh'
+                    elif obj == 'eigs':
+                        ini_out = f'{obj}_cfg{cfg_id:02d}.ini.xml'
                     else:
                         ini_out = f'{obj}_{nvec}_cfg{cfg_id:02d}.ini.xml'
 
@@ -126,7 +129,7 @@ def main(options):
                         disp = meson_xml._displacement_list()
                         filtered_data['momentum_list'] = moms
                         filtered_data['displacement_list'] = disp
-                        filtered_data['tsrc'] =4
+                        filtered_data['tsrc'] = 24
                         # filtered_data['t_sources'] = " ".join(map(str, tsrc_values))
                         # default value in yml file is overridden by the nvec loop for nvec study
                         filtered_data['num_vecs_perams'] = nvec

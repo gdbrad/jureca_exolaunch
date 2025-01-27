@@ -63,7 +63,7 @@ mom2_max : 2
 # distillation basis eg. eigs.sdb options
 Frequency: 1
 max_nvec: 128  # colorvecs to compute
-num_vecs: 300
+num_vecs: 128
 num_vecs_perams: 32  # gets overridden by num_vecs loop in create_tasks.py
 decay_dir: 3
 t_start: 0

@@ -9,7 +9,7 @@
           <num_vecs>{{ num_vecs }}</num_vecs>
           <decay_dir>{{ decay_dir  }}</decay_dir>
           <t_start>{{ t_start}} </t_start>
-          <Nt_forward>{{ Nt_forward}}</Nt_forward>
+          <Nt_forward>96</Nt_forward>
           <phase>{{ phase|join(' ') }}</phase>
           <write_fingerprint>false</write_fingerprint>
           <LinkSmearing>

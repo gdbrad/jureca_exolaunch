@@ -32,6 +32,7 @@ class Perams(BaseModel):
     prop_mass: str
     prop_clov_coeff: str
     prop_mass_label: str
+    prop_mass_light_label: str
     prop_mass_strange_label: str
 
     rho: str

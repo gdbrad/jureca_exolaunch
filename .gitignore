@@ -1,4 +1,6 @@
 *.pyc
+*.out 
+exolaunch-env/*
 /.check-all-peram.py.swp
 /.failed-configs.py.swp
 /.ipynb_checkpoints

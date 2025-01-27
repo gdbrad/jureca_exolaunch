@@ -18,6 +18,8 @@ class TaskHandler:
             'chroma_peram': env.get_template('peram_mg_binned.sh.j2'),
             'chroma_peram_strange': env.get_template('peram_strange_mg_binned.sh.j2'),
             'chroma_meson': env.get_template('meson_binned.sh.j2'),
+            'chroma_eigs': env.get_template('meson_binned.sh.j2'),
+
         }
         self.xml_classes = {
             'chroma_meson': chroma_sh_xml.ChromaOptions,
@@ -35,11 +37,9 @@ def main(options):
             value = input(f"you forgot to include '{key}' in your infile dummy!: ")
             dataMap[key] = value
 
-        # Rewrite the YAML file with added values
         with open(options.in_file, 'w') as f:
             yaml.safe_dump(dataMap, f)
 
-    # Set up Jinja.
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE), undefined=jinja2.StrictUndefined)
     handler = TaskHandler(env)
     run_objects = []
@@ -51,7 +51,7 @@ def main(options):
         if 'meson' in task:
             run_objects.append('chroma_meson')
     cfg_step=10
-    group_size=4
+    group_size=2 # change this number of in files per slurm script
     devices = [0, 1, 2, 3]  # Assuming 4 GPUs are available
 
     for cfg_group_start in range(options.cfg_i, options.cfg_f, cfg_step * group_size):
@@ -110,7 +110,6 @@ def main(options):
                         filtered_data.update(ens_props)
                         output_xml = handler.templates[obj].render(filtered_data)
                         
-                        # Debugging info
                         print(f"Writing file {ini_path} for object {obj}")
                         
                         with open(ini_path, 'w') as f:

@@ -1,8 +1,8 @@
 #!/bin/bash
-conf_start=991
+conf_start=11
 conf_step=10
-conf_end=1999
-basedir="ini"
+conf_end=1991
+basedir="ini-eigs"
 
 for i in $(seq ${conf_start} ${conf_step} ${conf_end} ); do
   j=$(printf %02d $i)
@@ -13,7 +13,7 @@ for i in $(seq ${conf_start} ${conf_step} ${conf_end} ); do
     cd ${cfg_dir}
     
     echo "Starting config ${i}"
-    eigs="eigs_${j}.sh"
+    eigs="eigs_cfg${j}.sh"
     
     if [ -f "${eigs}" ]; then
       sbatch ${eigs}
