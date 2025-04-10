@@ -15,7 +15,8 @@ class Perams(BaseModel):
     num_vecs: int 
     num_vecs_perams: int
     ens_short: str
-    colorvec_out: str  
+    colorvec_out: str 
+    cfg_name: str 
 
     # t_source_list: list HARDCODED RIGHT NOW 0-64
     Nt_forward: int
@@ -34,6 +35,8 @@ class Perams(BaseModel):
     prop_mass_label: str
     prop_mass_light_label: str
     prop_mass_strange_label: str
+    prop_mass_charm_label: str
+
 
     rho: str
     precision: str

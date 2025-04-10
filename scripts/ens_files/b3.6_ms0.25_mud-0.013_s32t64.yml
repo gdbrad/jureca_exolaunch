@@ -1,0 +1,86 @@
+#path options 
+code_dir: /p/scratch/exotichadrons/chroma-distillation-superb
+cfg_path: /p/data1/slnpp/GREGORY/CONFIGS/NF3P1/B3.6/B3.6_M-0.013M0.25_L32T64/NS8_LS1_G2
+cfg_name: test_b3.6_m-0.013m0.25_l32t64_nf3p1_cfg_
+# slurm job options 
+run_path: /p/scratch/exotichadrons/exolaunch/eric-L32T64
+superbblas_threads: 16
+omp_threads: 16
+
+max_moms_per_job: 000
+
+# ensemble properties 
+ens_short: s32t64 
+ens_long: b3.6_ms0.25_mud-0.013_s32t64
+cfgs: 4664
+cfg_i: 30
+cfg_f: 4664
+cfg_d: 10 #cfg step size 
+#regular eigs inputs
+num_iter: 50
+num_orthog: 20
+
+# eigs options
+eigs_slurm_nodes: 1
+eigs_chroma_geometry: [1, 1, 1, 1]
+eigs_chroma_minutes: 30
+max_nvec: 96  # colorvecs to compute
+num_vecs: 96
+t_start: 0
+# one of the following must be 0, the other must be temporal length of lattice
+Nt_forward: 64 
+Nt_backward: 0
+num_tries: -1
+max_rhs: 20
+phase: [0, 0, 0] 
+
+LinkSmearingType: STOUT_SMEAR
+link_smear_fact: 0.1
+link_smear_num: 10
+no_smear_dir: 3 
+decay_dir: 3
+
+# peram options 
+prop_slurm_nodes: 2
+prop_chroma_geometry: [1, 2, 2, 2] 
+prop_chroma_minutes: 60
+prop_mass_light_label: -0.013
+prop_mass_strange_label: 0.000
+prop_mass_charm_label: 0.25
+
+num_tsrc: 24
+prop_t_fwd: 64
+prop_t_back: 0
+prop_nvec: 64
+prop_zphases: 0.00
+prop_mass: -0.2350
+
+#fermion action 
+prop_clov_coeff: 1.00
+rho: 0.11
+precision: 1e-08
+max_iter: 500
+
+# meson options 
+meson_slurm_nodes: 1
+meson_chroma_max_tslices_in_contraction: 64 # as large as possible
+meson_chroma_geometry: [1, 1, 1, 4]
+meson_chroma_minutes: 1200
+meson_nvec: 64 #must be same as peram_nvec
+meson_zphases: [0.00,2.00] #SPLIT THIS CHROMA TAKES WITHOUT COMMA OR []
+
+# disco options 
+disco_max_rhs: 24
+disco_probing_displacement: 0
+disco_probing_power: 20
+disco_max_colors_at_once: 256
+disco_max_colors: 3325
+disco_noise_vectors: 1
+disco_slurm_nodes: 1
+disco_chroma_geometry: [1 1 1 4]
+disco_chroma_minutes: 120
+disco_num_gpu: 4
+
+# momentum properties 
+mom2_min : 0
+mom2_max : 2

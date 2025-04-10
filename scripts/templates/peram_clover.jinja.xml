@@ -7,18 +7,11 @@
         <Frequency>1</Frequency>
         <Param>
           <Contractions>
-            <mass_label>U{{ prop_mass_label }}</mass_label>
+            <mass_label>charm</mass_label>
             <num_vecs> {{ num_vecs_perams }}</num_vecs>
-            <t_sources>
-              0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-              16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-              32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-              48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
-              64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 
-              80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
-            </t_sources>
-            <Nt_forward>{{ NT }} </Nt_forward>
-            <Nt_backward>0</Nt_backward>
+            <t_sources>0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64</t_sources>
+            <Nt_forward>{{ prop_t_fwd }} </Nt_forward>
+            <Nt_backward>{{ prop_t_back }}</Nt_backward>
             <decay_dir>{{ decay_dir }}</decay_dir>
             <num_tries> {{ num_tries }}</num_tries>
             <max_rhs> {{ max_rhs }}</max_rhs>
@@ -31,7 +24,7 @@
             <numRetries>1</numRetries>
             <FermionAction>
                 <FermAct>CLOVER</FermAct>
-                <Mass>{{ prop_mass_label }}</Mass>
+                <Mass>{{ prop_mass_charm_label }}</Mass>
                 <clovCoeff>{{ prop_clov_coeff }}</clovCoeff>
                 <FermState>
                     <Name>STOUT_FERM_STATE</Name>
@@ -53,7 +46,7 @@
                 <Delta>0.1</Delta>
                 <Verbose>false</Verbose>
                 <CloverParams>
-                    <Mass>{{ prop_mass_label }}</Mass>
+                    <Mass>{{ prop_mass_charm_label }}</Mass>
                     <clovCoeff>{{ prop_clov_coeff }}</clovCoeff>
                 </CloverParams>
                 <AutotuneDslash>true</AutotuneDslash>
@@ -67,10 +60,10 @@
           </Propagator>
 
         </Param>
-        <NamedObject>
+         <NamedObject>
           <gauge_id>default_gauge_field</gauge_id>
-          <colorvec_files><elem>{{ run_path }}/eigs_sdb/{{ colorvec_out }}_numvecs{{ num_vecs }}_cfg{{ cfg_id }}.sdb</elem></colorvec_files>
-          <prop_op_file>{{ run_path }}/perams_sdb/peram_{{ num_vecs_perams }}_cfg{{ cfg_id }}.sdb</prop_op_file>
+          <colorvec_files><elem>{{ run_path }}/eigs_sdb/eigs_numvecs96_cfg{{ cfg_id }}.sdb</elem></colorvec_files>
+          <prop_op_file>{{ run_path }}/perams_sdb/numvec{{ num_vecs_perams }}/peram_{{ num_vecs_perams }}_cfg{{ cfg_id }}.sdb</prop_op_file>
         </NamedObject>
       </elem>
     </InlineMeasurements>
@@ -86,7 +79,7 @@
   </RNG>
   <Cfg>
     <cfg_type>SZINQIO</cfg_type>
-    <cfg_file>{{ cfg_path }}b{{ beta }}_ms{{ ms }}_mud-{{ mud }}_s{{ NL }}t{{ NT }}-{{ P }}-n_cfg_{{ cfg_id }}.lime</cfg_file>
+    <cfg_file>{{ cfg_path }}/{{ cfg_name }}{{ cfg_id }}.lime</cfg_file>
     <parallel_io>false</parallel_io>
   </Cfg>
 </chroma>

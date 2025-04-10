@@ -9,7 +9,6 @@ import re
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 print(PROJECT_DIR)
-# CONFS_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),'..', '..', 'cfgs'))
 FDIR = os.path.dirname(os.path.realpath(__file__))
 INFILES = os.path.abspath(os.path.join(FDIR, "ens_files"))
 TEMPLATE = os.path.join(FDIR,'templates')
@@ -22,47 +21,72 @@ OUTPATH = os.path.join(FDIR,'res/slurm_scripts')
 #     data = [file.rstrip(".lime")]
 #     print(data)
 
+import re
+from typing import Dict, Any
+
 def parse_ensemble(short_tag: str) -> Dict[str, Any]:
-    # see sim_params.png #
+    # Ensemble definitions
     long_tag = {
         "a125m280": "b3.30_ms-0.057_mud-0.129_s32t64-000-0001-0400",
-        "test": "b3.70_ms0.000_mud-0.022_s32t96-000"
-        # "a15m310L": "l2448f211b580m013m065m838",
-        # "a12m310": "l2464f211b600m0102m0509m635",
-        # "a09m310": "l3296f211b630m0074m037m440",
+        "test": "b3.70_ms0.000_mud-0.022_s32t96-000",
+        "s32t64": "b3.6_mc0.25_mud-0.013_s32t64"
     }
     key = long_tag[short_tag]
 
-    pattern = (
-    r"b(?P<beta>[0-9]+\.[0-9]+)"
-    r"_ms(?P<ms>[0-9]+\.[0-9]{3})"
-    r"_mud-(?P<mud>[0-9]+\.[0-9]{3})"
-    r"_s(?P<NL>[0-9]{2})"
-    r"t(?P<NT>[0-9]{2})"
-    r"-(?P<P>[0-9]{3})"
-)
+    patterns = [
+        # standard format with ms and mud
+        r"b(?P<beta>[0-9]+\.[0-9]+)"
+        r"_ms(?P<ms>-?[0-9]+\.[0-9]{3})"
+        r"_mud-(?P<mud>[0-9]+\.[0-9]{3})"
+        r"_s(?P<NL>[0-9]{2})"
+        r"t(?P<NT>[0-9]{2})"
+        r"-(?P<P>[0-9]{3})",
+
+        # Pattern for s32t64 format with mc instead of ms
+        r"b(?P<beta>[0-9]+\.[0-9]+)"
+        r"_mc(?P<mc>[0-9]+\.[0-9]{2})"
+        r"_mud-(?P<mud>[0-9]+\.[0-9]{3})"
+        r"_s(?P<NL>[0-9]{2})"
+        r"t(?P<NT>[0-9]{2})",
+
+        # minimal
+        r"b(?P<beta>[0-9]+\.[0-9]+)"
+        r"_ms(?P<ms>-?[0-9]+\.[0-9]{3})"
+        r"_mud-(?P<mud>[0-9]+\.[0-9]{3})"
+        r"_s(?P<NL>[0-9]{2})"
+        r"t(?P<NT>[0-9]{2})"
+    ]
+
+    # Type mapping for conversion
     type_map = {
         "beta": str,
         "NT": int,
-        "NL":int,
-        "P":str,
+        "NL": int,
+        "P": str,
         "mud": str,
         "ms": str,
+        "mc": str,
     }
 
-    match = re.match(pattern, key)
-    info = (
-        {
-            key: type_map[key](val)
-            for key, val in match.groupdict().items()
-            if key in type_map
-        }
-        if match
-        else {}
-    )
+    info = {}
+    for pattern in patterns:
+        match = re.match(pattern, key)
+        if match:
+            groups = match.groupdict()
+            info = {
+                key: type_map[key](val)
+                for key, val in groups.items()
+                if key in type_map and val is not None
+            }
+            break
+
     return info
-ens_props = parse_ensemble("test")
-print(ens_props)
+
+# Test cases
+# for tag in ["a125m280", "test", "s32t64"]:
+#     ens_props = parse_ensemble(tag)
+#     print(f"{tag}: {ens_props}")
+ens_props = parse_ensemble("s32t64")
 
 class ChromaOptions(BaseModel):
     '''
@@ -76,7 +100,6 @@ class ChromaOptions(BaseModel):
     cfg_f: int #0400
 
     max_moms_per_job: int
-    machine: str
     momentum_list: list
 
     mom2_min: int 
@@ -92,7 +115,8 @@ class ChromaOptions(BaseModel):
     run_perams: bool
     prop_slurm_nodes: int
     prop_chroma_geometry: list
-    prop_chroma_minutes: int 
+    prop_chroma_minutes: int
+    prop_num_gpu: int 
 
     run_meson:bool
     meson_slurm_nodes: int
@@ -102,14 +126,14 @@ class ChromaOptions(BaseModel):
     meson_chroma_minutes: int
     meson_chroma_parts: int # split the time slices into this many different files
 
-    run_baryon: bool
-    baryon_slurm_nodes: int
-    baryon_chroma_geometry: list
-    baryon_chroma_minutes: int
-
+    # disco options 
+    disco_slurm_nodes: int
+    disco_chroma_geometry: list
+    disco_chroma_minutes: int
+    disco_num_gpu: int 
+    
     #slurm job options 
     run_path: str 
-    # oldscratch_path: str
     num_vecs:int
     num_vecs_perams:int
 

@@ -1,24 +1,24 @@
 #!/bin/bash
-conf_start=400
-conf_step=50
-conf_end=4000
-basedir="eric-L32T64/ini-eigs"
+conf_start=11
+conf_step=10
+conf_end=1991
+basedir="gio-L32T96/ini-peram_charm_clover"
 
 for i in $(seq ${conf_start} ${conf_step} ${conf_end} ); do
   j=$(printf %02d $i)
 
-  cfg_dir="${basedir}/cnfg${j}"
+  cfg_dir="${basedir}/cnfg${j}/numvec96"
   
   if [ -d "${cfg_dir}" ]; then
     cd ${cfg_dir}
     
     echo "Starting config ${i}"
-    eigs="eigs_cfg${j}.sh"
+    peram="peram_96_cfg${j}.sh"
     
-    if [ -f "${eigs}" ]; then
-      sbatch ${eigs}
+    if [ -f "${peram}" ]; then
+      sbatch ${peram}
     else
-      echo "Shell script ${eigs} not found in ${cfg_dir}"
+      echo "Shell script ${peram} not found in ${cfg_dir}"
     fi
     
     cd - > /dev/null

@@ -74,6 +74,19 @@ def check_files_and_prompt(configs, tsrc, obs):
                     small_files_configs.append(cfg)
                 else:
                     print(f"Skipping deletion of file: {file_path}")
+
+            # Check if peram_strange file is smaller than 5 GB
+            elif obs == 'peram_strange' and file_size < 5 * 1024**3:  # Files less than 5 GB
+                print(f"Found small file (less than 5 GB) for perams_strange: {file_path}")
+                delete = input(f"Do you want to delete the small file {file_path}? (y/n): ").strip().lower()
+
+                if delete == 'y':
+                    os.remove(file_path)
+                    print(f"Deleted small file: {file_path}")
+                    small_files_configs.append(cfg)
+                else:
+                    print(f"Skipping deletion of file: {file_path}")
+
         else:
             print(f"Missing file for cfg {cfg}: {file_path}")
             missing_configs.append(cfg)
@@ -209,17 +222,29 @@ def generate_shell_scripts_and_submit(missing_configs, tsrc, obs,group_size):
             
             script_content += log_line + in_line + out_line + output_line + srun_line + sleep_line
         
+        # write out relaunch scripts to dir #
+        os.makedirs("rerun-scripts", exist_ok=True)
         script_content += "wait\n"
         
-        script_filename = f'rerun_{obs}_{numvecs}_tsrc{tsrc}_{script_num}.sh'
+        script_filename = f'rerun_{obs}_{numvecs}_{script_num}.sh'
+        # Check if the file already exists and remove it
+        destination_path = os.path.join("rerun-scripts", script_filename)
+        if os.path.exists(destination_path):
+            os.remove(destination_path)
+
         with open(script_filename, 'w') as f:
             f.write(script_content)
 
         # auto submit
-        os.system(f"sbatch {script_filename}")
+        # os.system(f"sbatch {script_filename}")
         script_num += 1
+        # Move the script to the "rerun-scripts" directory
+        os.makedirs("rerun-scripts", exist_ok=True)  # Ensure the directory exists
+        shutil.move(script_filename, "rerun-scripts/")
 
-        shutil.move(f"mv {script_filename}", "rerun-scripts/")
+        print(f"Generated script: rerun-scripts/{script_filename}")
+
+        # shutil.move(f"mv {script_filename}", "rerun-scripts/")
 
 # check for zero-sized and missing files, prompt user
 missing_configs = check_files_and_prompt(configs, tsrc=24, obs=obs)

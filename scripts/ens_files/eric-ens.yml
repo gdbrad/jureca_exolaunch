@@ -1,0 +1,111 @@
+#path options 
+code_dir: /p/scratch/exotichadrons/chroma-distillation
+cfg_path: /p/scratch/cslnpp/GREGORY/FOR_GRANT/test_b3.6_m-0.013m0.25_l64t64_nf3p1_cfg_3200.lime
+metaq_dir: /p/scratch/exotichadrons/metaq
+# slurm job options 
+run_path: /p/scratch/exotichadrons/exolaunch
+oldscratch_path: /p/oldscratch/exotichadrons/exolaunch
+num_gpu: 1
+facility: jureca
+superbblas_threads: 16
+omp_threads: 16
+
+# task properties 
+run_eigs: false
+run_perams: True
+run_meson: false
+run_baryon: false
+run_exotract: false
+max_moms_per_job: 000
+
+# ensemble properties 
+ens_short: eric
+ens_long: b3.6_m-0.013m0.25_l64t64_nf3p1
+cfgs: 1
+cfg_i: 3200
+cfg_f: 3200
+cfg_d: 1 #cfg step size 
+#regular eigs inputs
+num_iter: 50
+num_orthog: 20
+
+# eigs options
+eigs_slurm_nodes: 1
+eigs_chroma_geometry: [1, 1, 1, 1]
+eigs_chroma_minutes: 1200
+eigs_transfer_back : false
+eigs_delete_after_transfer_back : false
+
+# peram options 
+prop_slurm_nodes: 2
+prop_chroma_geometry: [1, 2, 2, 2] 
+prop_chroma_minutes: 1200
+prop_mass_light_label: -0.022
+prop_mass_strange_label: 0.000
+
+
+# meson options 
+meson_slurm_nodes: 2
+meson_chroma_max_tslices_in_contraction: 96 # as large as possible
+meson_chroma_geometry: [1, 2, 2, 2]
+meson_chroma_minutes: 1200
+meson_chroma_parts: 4 # split the time slices into this many different files
+
+#baryon options 
+baryon_slurm_nodes: 1 
+baryon_chroma_geometry: [1, 2, 2, 2]
+baryon_chroma_minutes: 120 
+
+# momentum properties 
+mom2_min : 0
+mom2_max : 2
+
+# distillation basis eg. eigs.sdb options
+Frequency: 1
+max_nvec: 128  # colorvecs to compute
+num_vecs: 128
+num_vecs_perams: 32  # gets overridden by num_vecs loop in create_tasks.py
+decay_dir: 3
+t_start: 0
+# one of the following must be 0, the other must be temporal length of lattice
+Nt_forward: 0 
+Nt_backward: 64
+num_tries: -1
+max_rhs: 20
+phase: [0, 0, 0] 
+write_fingerprint: false
+  
+LinkSmearingType: STOUT_SMEAR
+link_smear_fact: 0.1
+link_smear_num: 10
+no_smear_dir: 3 
+
+gauge_id: default_gauge_field
+colorvec_out: eigs
+
+# perambulator options 
+prop_t_sources: seq 0 96
+prop_t_fwd: 64
+prop_t_back: 0
+prop_nvec: 32
+prop_zphases: 0.00
+prop_mass: -0.2350
+
+#fermion action 
+prop_clov_coeff: 1.00
+rho: 0.11
+precision: 1e-08
+max_iter: 500
+
+# meson options 
+meson_nvec: 32 #must be same as peram_nvec
+meson_zphases: [0.00,2.00] #SPLIT THIS CHROMA TAKES WITHOUT COMMA OR []
+meson_t_fwd: 32
+meson_t_back: 32
+# BARYON OPTIONS 
+#baryon_nvec = nvec so dont need to define 
+baryon_zphases: 0.0 
+baryon_chroma_max_tslices_in_contraction: 1 #large as possible  
+baryon_chroma_max_moms_in_contraction: 1 #(0 == do all momenta at once)
+baryon_chroma_max_vecs: 2 # (0 == do all eigvecs contracted at once)
+

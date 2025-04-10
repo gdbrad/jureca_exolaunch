@@ -37,6 +37,8 @@ Run `launch_{object}.sh`, where object can be ['eigs','perams','mesons','baryons
 
 There __should be__ an option in the master script to save/transfer/or delete the eigensystem sdb files after generation. Obviously, this would occur after the perambulators and elementals are generated. Eigensystems are expensive to store but easy to generate?
 
+Note: <write_fingerprint>false</write_fingerprint> needs to remain false as if set to true, then only minimal metadata is written out to sdb file, not the actual eigenpairs. I modified https://github.com/JeffersonLab/chroma/blob/devel/lib/meas/inline/hadron/inline_create_colorvecs_superb.cc to enable printing of the eigenvalues as they are computed, this is required for using distillation profiles. 
+
   
 Take components of `chroma` output :
 - quark lines 

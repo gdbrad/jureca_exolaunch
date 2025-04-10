@@ -7,9 +7,9 @@
         <Frequency>1</Frequency>
         <Param>
           <num_vecs>{{ num_vecs }}</num_vecs>
-          <decay_dir>{{ decay_dir  }}</decay_dir>
+          <decay_dir>3</decay_dir>
           <t_start>{{ t_start}} </t_start>
-          <Nt_forward>96</Nt_forward>
+          <Nt_forward>{{ NT }}</Nt_forward>
           <phase>{{ phase|join(' ') }}</phase>
           <write_fingerprint>false</write_fingerprint>
           <LinkSmearing>
@@ -21,7 +21,7 @@
         </Param>
         <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
-	          <colorvec_out>{{ run_path }}/eigs_sdb/{{ colorvec_out }}_numvecs{{ num_vecs }}_cfg{{ cfg_id }}.sdb</colorvec_out>
+	          <colorvec_out>{{ run_path }}/eigs_sdb/eigs_numvecs{{ num_vecs }}_cfg{{ cfg_id }}.sdb</colorvec_out>
         </NamedObject>
       </elem>
     </InlineMeasurements>
@@ -37,7 +37,7 @@
     </RNG>
     <Cfg>
       <cfg_type>SZINQIO</cfg_type>
-      <cfg_file>{{ cfg_path }}b{{ beta }}_ms{{ ms }}_mud-{{ mud }}_s{{ NL }}t{{ NT }}-{{ P }}-n_cfg_{{ cfg_id }}.lime</cfg_file>
+      <cfg_file>{{ cfg_path }}/test_b{{ beta }}_m-{{ mud }}m{{ mc }}_l{{ NL }}t{{ NT }}_nf3p1_cfg_{{ cfg_id }}.lime</cfg_file>
       <parallel_io>false</parallel_io>
   </Cfg>
 </chroma>

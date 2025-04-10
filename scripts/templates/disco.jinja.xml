@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<chroma>
+  <Param>
+    <InlineMeasurements>
+      <elem>
+        <Name>DISCO_PROBING_3D_DEFLATION_SUPERB</Name>
+        <Param>
+        <Displacements> 
+         {%- for displacement in disco_displacement_list -%}
+          <elem>{{ displacement | join }}</elem>
+        {%- endfor %}
+        </Displacements>
+        <mom_list>
+           <elem>0 0 0</elem>
+        </mom_list>
+        <mass_label>{ prop_mass_light_label }</mass_label>
+        <probing_distance>{ disco_probing_displacement }</probing_distance>
+        <probing_power>{ disco_probing_power }</probing_power>
+        <first_color>(( color_part*disco_max_colors_at_once ))</first_color>
+        <num_colors>{ disco_max_colors_at_once }</num_colors>
+        <noise_vectors>{ disco_noise_vectors }</noise_vectors>
+        <t_sources>{% for i in range(0, NT, 8) %}{{ i }}{% if not loop.last %} {% endif %}{% endfor %}</t_sources>
+        <max_rhs>{ disco_max_rhs }</max_rhs>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+            <FermAct>CLOVER</FermAct>
+                <Mass>{ prop_mass_light_label }</Mass>
+                <clovCoeff>{ prop_clov_coeff }</clovCoeff>
+            <FermState>
+              <Name>STOUT_FERM_STATE</Name>
+              <rho>0.125</rho>
+              <n_smear>1</n_smear>
+              <orthog_dir>-1</orthog_dir>
+              <FermionBC>
+                <FermBC>SIMPLE_FERMBC</FermBC>
+                <boundary>1 1 1 -1</boundary>
+              </FermionBC>
+            </FermState>
+          </FermionAction>
+            <InvertParam>
+              <invType>QUDA_CLOVER_INVERTER</invType>
+                <SolverType>BICGSTAB</SolverType>
+                <MaxIter>60000</MaxIter>
+                <RsdTarget>1.0e-6</RsdTarget>
+                <AntiPeriodicT>true</AntiPeriodicT>
+                <Delta>0.1</Delta>
+                <Verbose>false</Verbose>
+                <CloverParams>
+                    <Mass>{{ prop_mass_light_label }}</Mass>
+                    <clovCoeff>{{ prop_clov_coeff }}</clovCoeff>
+                </CloverParams>
+                <AutotuneDslash>true</AutotuneDslash>
+                <AsymmetricLinop>true</AsymmetricLinop>
+                <CudaReconstruct>RECONS_12</CudaReconstruct>
+                <CudaSloppyPrecision>SINGLE</CudaSloppyPrecision>
+                <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct>
+                <AxialGaugeFix>false</AxialGaugeFix>
+                <DumpOnFail>true</DumpOnFail>
+            </InvertParam>
+        </Propagator>
+        <Projector>
+        <projectorType>MGPROTON</projectorType>
+        <type>mg</type>
+        <prolongator>
+          <num_null_vecs>24</num_null_vecs>
+          <blocking>4 4 4 4</blocking>
+          <null_vecs>
+            <solver>
+              <type>eo</type>
+              <use_Aee_prec>true</use_Aee_prec>
+              <solver>
+                <type>bicgstab</type>
+                <tol>3e-3</tol>
+                <max_its>10000</max_its>
+                <prefix>eig0</prefix>
+                <verbosity>summary</verbosity>
+              </solver>
+            </solver>
+            <tol>0.01</tol>
+            <eigensolver>
+              <max_block_size>1</max_block_size>
+              <max_basis_size>40</max_basis_size>
+              <verbosity>VeryDetailed</verbosity>
+            </eigensolver>
+          </null_vecs>
+        </prolongator>
+        <proj>
+          <type>mg</type>
+          <prolongator>
+            <num_null_vecs>32</num_null_vecs>
+            <blocking>2 2 2 2</blocking>
+            <null_vecs>
+              <solver>
+                <type>eo</type>
+                <use_Aee_prec>true</use_Aee_prec>
+                <solver>
+                  <type>bicgstab</type>
+                  <tol>1e-3</tol>
+                  <max_its>10000</max_its>
+                  <prefix>eig1</prefix>
+                  <verbosity>summary</verbosity>
+                </solver>
+              </solver>
+              <tol>3e-3</tol>
+              <eigensolver>
+                <max_block_size>1</max_block_size>
+                <max_basis_size>40</max_basis_size>
+                <verbosity>VeryDetailed</verbosity>
+              </eigensolver>
+            </null_vecs>
+          </prolongator>
+          <proj>
+            <type>defl</type>
+            <rank>800</rank>
+            <tol>1e-6</tol>
+            <solver>
+              <type>eo</type>
+              <use_Aee_prec>true</use_Aee_prec>
+              <solver>
+                <type>bicgstab</type>
+                <tol>3e-8</tol>
+                <max_its>10000</max_its>
+                <prefix>eig2</prefix>
+                <verbosity>summary</verbosity>
+              </solver>
+            </solver>
+            <eigensolver>
+              <max_block_size>8</max_block_size>
+              <max_basis_size>80</max_basis_size>
+              <verbosity>VeryDetailed</verbosity>
+            </eigensolver>
+          </proj>
+        </proj>
+        </Projector>
+        <use_ferm_state_link>true</use_ferm_state_link>
+      </Param>
+      <NamedObject>
+      <gauge_id>default_gauge_field</gauge_id>
+      {% set num_color_parts = ((disco_max_colors + disco_max_colors_at_once - 1) / disco_max_colors_at_once)|int %}
+      {% for t_source in disco_t_sources %}
+        {% for color_part in range(num_color_parts) %}
+          <sdb_file>{{ run_path }}/disco_sdb/disco_t{{ t_source }}_p{{ color_part }}/disco.cp{{  color_part }}cfg{{ cfg_id }}.sdb</sdb_file>
+        {% endfor %}
+      {% endfor %}
+    </NamedObject>
+  </elem>
+</InlineMeasurements>
+<nrow>{{NL}} {{NL}} {{NL}} {{NT}}</nrow>
+</Param>
+<RNG>
+  <Seed>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+<Cfg>
+    <cfg_type>SZINQIO</cfg_type>
+    <cfg_file>{{ cfg_path }}/{{ cfg_name }}{{ cfg_id }}.lime</cfg_file>
+    <parallel_io>false</parallel_io>
+  </Cfg>
+</chroma>

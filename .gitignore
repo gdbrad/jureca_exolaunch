@@ -1,5 +1,9 @@
 *.pyc
-*.out 
+*.out
+eric-L32T64/*
+gio-L32T96/*
+eric-L64T64/*
+core*
 exolaunch-env/*
 /.check-all-peram.py.swp
 /.failed-configs.py.swp
@@ -97,3 +101,4 @@ exolaunch-env/*
 /stdout.txt
 /tmp
 /to_relaunch.txt
+ini-meson/

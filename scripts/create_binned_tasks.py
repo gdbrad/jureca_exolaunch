@@ -17,14 +17,15 @@ class TaskHandler:
         self.templates = { 
             'chroma_peram': env.get_template('peram_mg_binned.sh.j2'),
             'chroma_peram_strange': env.get_template('peram_strange_mg_binned.sh.j2'),
+            'chroma_peram_charm': env.get_template('peram_charm_mg_binned.sh.j2'),
             'chroma_meson': env.get_template('meson_binned.sh.j2'),
-            'chroma_eigs': env.get_template('meson_binned.sh.j2'),
-
         }
         self.xml_classes = {
             'chroma_meson': chroma_sh_xml.ChromaOptions,
             'chroma_peram': chroma_sh_xml.ChromaOptions,
             'chroma_peram_strange': chroma_sh_xml.ChromaOptions,
+            'chroma_peram_charm': chroma_sh_xml.ChromaOptions,
+
         }
 
 def main(options):
@@ -48,10 +49,12 @@ def main(options):
             run_objects.append('chroma_peram')
         if 'peram_strange' in task:
             run_objects.append('chroma_peram_strange')
+        if 'peram_charm' in task:
+            run_objects.append('chroma_peram_charm')
         if 'meson' in task:
             run_objects.append('chroma_meson')
     cfg_step=10
-    group_size=2 # change this number of in files per slurm script
+    group_size=4 # change this number of in files per slurm script
     devices = [0, 1, 2, 3]  # Assuming 4 GPUs are available
 
     for cfg_group_start in range(options.cfg_i, options.cfg_f, cfg_step * group_size):
@@ -88,10 +91,10 @@ def main(options):
 
                     if obj in options.list_tasks:
                         base = handler.xml_classes[obj]
-                        if dataMap['facility'] in ['jureca', 'juwels']:
-                            expected_keys = base.__fields__.keys()
-                        else:
-                            expected_keys = base.model_fields.keys()
+                        # if dataMap['facility'] in ['jureca', 'juwels']:
+                        #     expected_keys = base.__fields__.keys()
+                        # else:
+                        expected_keys = base.model_fields.keys()
                         filtered_data = {k: v for k, v in dataMap.items() if k in expected_keys}
                         # filtered_data['cfg_id'] = f'{cfg_id:02d}'
                         filtered_data['cfg_ids'] = cfg_ids

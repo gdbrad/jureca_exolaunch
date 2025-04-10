@@ -8,29 +8,30 @@
 #SBATCH --account=exotichadrons
 #SBATCH -t 12:00:00
 #SBATCH --gres=gpu:4
+CODE_DIR={{ code_dir }}
+myenv=$CODE_DIR/env-new-jureca-gpu.sh
+formenv=$CODE_DIR/env_extra.sh
+source $myenv 
+source $formenv
+chroma=$CODE_DIR/install/chroma-quda-qdp-jit-double-nd4-cmake-superbblas-cuda/bin/chroma
 
 export OPENBLAS_NUM_THREADS={{ superbblas_threads }}
 export OMP_NUM_THREADS={{ omp_threads }}
 
-CODE_DIR={{ code_dir }}
-METAQ_DIR={{ metaq_dir }}
-source $CODE_DIR/install-scripts/machines/env-new-jureca-gpu.sh
-chroma=$CODE_DIR/install/chroma/bin/chroma
-
 BASE_DIR={{ run_path }}
-if [ ! -d "$BASE_DIR/res/log/perams" ]; then
-  mkdir -p "$BASE_DIR/res/log/perams";
+if [ ! -d "$BASE_DIR/log/perams" ]; then
+  mkdir -p "$BASE_DIR/log/perams";
 fi 
-if [ ! -d "$BASE_DIR/res/out/perams" ]; then
-  mkdir -p "$BASE_DIR/res/out/perams";
+if [ ! -d "$BASE_DIR/out/perams" ]; then
+  mkdir -p "$BASE_DIR/out/perams";
 fi 
 
 export OPTS=" -geom 1 1 1 1"
 
 {% for cfg_id, device_id in cfg_ids_and_devices %}
-log_{{ cfg_id }}=$BASE_DIR/res/log/perams/perams_{{ cfg_id }}_numvecs-{{ num_vecs_perams }}.log
+log_{{ cfg_id }}=$BASE_DIR/log/perams/perams_{{ cfg_id }}_numvecs-{{ num_vecs_perams }}.log
 in_{{ cfg_id }}=$BASE_DIR/ini-24/cnfg{{ cfg_id }}/numvec{{ num_vecs_perams }}/peram_mg_{{ num_vecs_perams }}_cfg{{ cfg_id }}.ini.xml
-out_{{ cfg_id }}=$BASE_DIR/res/out/perams/perams_{{ cfg_id }}_numvecs-{{ num_vecs_perams }}.out.xml
+out_{{ cfg_id }}=$BASE_DIR/out/perams/perams_{{ cfg_id }}_numvecs-{{ num_vecs_perams }}.out.xml
 output_{{ cfg_id }}="$BASE_DIR/chroma_out/binned/perams_{{ cfg_id }}_numvecs-{{ num_vecs_perams }}.out"
 
 CUDA_VISIBLE_DEVICES={{ device_id }} srun --exclusive -n 1 --gres=gpu:1 -c 16 $chroma $OPTS -i $in_{{ cfg_id }} -o $out_{{ cfg_id }} -l $log_{{ cfg_id }} > $output_{{ cfg_id }} 2>&1 &
